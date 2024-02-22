@@ -28,6 +28,6 @@ const (
 // RegisterRoutes for Harbor v2.0 APIs
 func RegisterRoutes() {
 	router.NewRoute().Path("/api/" + APIVersion + "/*").
-		Middleware(apiversion.Middleware(APIVersion)).
+		Middleware(apiversion.Middleware(APIVersion)). // 设置 api version
 		Handler(handler.New())
 }

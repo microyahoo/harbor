@@ -61,7 +61,7 @@ func (c *CfgManager) LoadSystemConfigFromEnv() {
 	itemArray := metadata.Instance().GetAll()
 	// Init System Value
 	for _, item := range itemArray {
-		if item.Scope == metadata.SystemScope && len(item.EnvKey) > 0 {
+		if item.Scope == metadata.SystemScope && len(item.EnvKey) > 0 { // system scope
 			if envValue, ok := os.LookupEnv(item.EnvKey); ok {
 				configValue, err := metadata.NewCfgValue(item.Name, envValue)
 				if err != nil {

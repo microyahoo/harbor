@@ -40,7 +40,7 @@ import (
 func init() {
 	// register the execution status refresh task if enable the async update
 	if interval := config.GetExecutionStatusRefreshIntervalSeconds(); interval > 0 {
-		gtask.DefaultPool().AddTask(scanAndRefreshOutdateStatus, time.Duration(interval)*time.Second)
+		gtask.DefaultPool().AddTask(scanAndRefreshOutdateStatus, time.Duration(interval)*time.Second) // 异步刷新任务状态
 	}
 }
 

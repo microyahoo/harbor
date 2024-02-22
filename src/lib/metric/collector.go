@@ -56,7 +56,7 @@ var (
 		prometheus.SummaryOpts{
 			Namespace:  os.Getenv(NamespaceEnvKey),
 			Subsystem:  os.Getenv(SubsystemEnvKey),
-			Name:       "http_request_duration_seconds",
+			Name:       "http_request_duration_seconds", // request duration
 			Help:       "The time duration of the requests",
 			Objectives: map[float64]float64{0.5: 0.05, 0.9: 0.01, 0.99: 0.001},
 		},

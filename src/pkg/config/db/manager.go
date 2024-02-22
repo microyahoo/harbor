@@ -25,7 +25,7 @@ import (
 )
 
 func init() {
-	libCfg.Register(common.DBCfgManager, NewDBCfgManager())
+	libCfg.Register(common.DBCfgManager, NewDBCfgManager()) // 注册 db cfg manager
 }
 
 // NewDBCfgManager - create DB config manager
@@ -39,9 +39,9 @@ func NewDBCfgManager() *config.CfgManager {
 
 	manager := &config.CfgManager{Store: store.NewConfigStore(cfgDriver)}
 	// load default value
-	manager.LoadDefault()
+	manager.LoadDefault() // 加载默认配置
 	// load system config from env
-	manager.LoadSystemConfigFromEnv()
+	manager.LoadSystemConfigFromEnv() // 从环境变量中读取
 	return manager
 }
 

@@ -83,7 +83,7 @@ var (
 )
 
 // MiddleWares returns global middlewares
-func MiddleWares() []web.MiddleWare {
+func MiddleWares() []web.MiddleWare { // all middlewares
 	return []web.MiddleWare{
 		url.Middleware(),
 		mergeslash.Middleware(),

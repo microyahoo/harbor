@@ -55,7 +55,7 @@ func registerRoutes() {
 	router.NewRoute().Method(http.MethodPost).Path("/service/notifications/jobs/retention/task/:id([0-9]+)").Handler(handler.NewJobStatusHandler())
 	router.NewRoute().Method(http.MethodPost).Path("/service/notifications/tasks/:id").Handler(handler.NewJobStatusHandler())
 
-	web.Router("/service/token", &token.Handler{})
+	web.Router("/service/token", &token.Handler{}) // service token
 
 	// Error pages
 	web.ErrorController(&controllers.ErrorController{})

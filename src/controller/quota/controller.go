@@ -44,7 +44,7 @@ import (
 func init() {
 	// register the async task for flushing quota to db when enable update quota by redis
 	if provider := config.GetQuotaUpdateProvider(); provider == updateQuotaProviderRedis.String() {
-		gtask.DefaultPool().AddTask(flushQuota, 30*time.Second)
+		gtask.DefaultPool().AddTask(flushQuota, 30*time.Second) // 异步更新 quota
 	}
 }
 

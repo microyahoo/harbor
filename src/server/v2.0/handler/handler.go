@@ -45,7 +45,7 @@ func New() http.Handler {
 		IconAPI:               newIconAPI(),
 		RobotAPI:              newRobotAPI(),
 		Robotv1API:            newRobotV1API(),
-		ReplicationAPI:        newReplicationAPI(),
+		ReplicationAPI:        newReplicationAPI(), // 创建 replication api handler
 		RegistryAPI:           newRegistryAPI(),
 		SysteminfoAPI:         newSystemInfoAPI(),
 		PingAPI:               newPingAPI(),

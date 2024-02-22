@@ -1,5 +1,3 @@
-// Copyright Project Harbor Authors
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -41,7 +39,7 @@ type CfgMetaData struct {
 
 // init ...
 func (c *CfgMetaData) init() {
-	c.initFromArray(ConfigList)
+	c.initFromArray(ConfigList) // 根据 ConfigList 进行初始化
 }
 
 // initFromArray - Initial metadata from an array

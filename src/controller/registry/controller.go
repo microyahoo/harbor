@@ -223,13 +223,13 @@ func (c *controller) StartRegularHealthCheck(ctx context.Context, closing, done 
 	for {
 		select {
 		case <-ticker.C:
-			registries, err := c.regMgr.List(ctx, nil)
+			registries, err := c.regMgr.List(ctx, nil) // list 所有的 registry
 			if err != nil {
 				log.Errorf("failed to list registries: %v", err)
 				continue
 			}
 			for _, registry := range registries {
-				isHealthy, err := c.IsHealthy(ctx, registry)
+				isHealthy, err := c.IsHealthy(ctx, registry) // 检查 registry 的健康状态
 				if err != nil {
 					log.Errorf("failed to check health of registry %d: %v", registry.ID, err)
 					continue

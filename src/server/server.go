@@ -20,7 +20,7 @@ import (
 )
 
 // RegisterRoutes register all routes
-func RegisterRoutes() {
+func RegisterRoutes() { // 注册路由信息
 	registerRoutes()          // service/internal API/UI controller/etc.
 	registry.RegisterRoutes() // OCI registry APIs
 	v2.RegisterRoutes()       // v2.0 APIs

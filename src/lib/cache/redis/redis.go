@@ -132,7 +132,7 @@ func (i *ScanIterator) Val() string {
 }
 
 // New returns redis cache
-func New(opts cache.Options) (cache.Cache, error) {
+func New(opts cache.Options) (cache.Cache, error) { //  连接 redis
 	if opts.Address == "" {
 		opts.Address = "redis://localhost:6379/0"
 	}

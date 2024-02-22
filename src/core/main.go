@@ -151,7 +151,7 @@ func main() {
 	if err != nil {
 		panic("bad _REDIS_URL_HARBOR")
 	}
-	if err := cache.Initialize(u.Scheme, redisHarborURL); err != nil {
+	if err := cache.Initialize(u.Scheme, redisHarborURL); err != nil { // 缓存初始化
 		log.Fatalf("failed to initialize cache: %v", err)
 	}
 	// when config/db init function is called, the cache is not ready,
@@ -167,7 +167,7 @@ func main() {
 	// default beego max memory and max upload size is 128GB, consider from some AI related image would be large,
 	// also support customize it from the environment variables if the default value cannot satisfy some scenarios.
 	web.BConfig.MaxMemory = config.GetBeegoMaxMemoryBytes()
-	web.BConfig.MaxUploadSize = config.GetBeegoMaxUploadSizeBytes()
+	web.BConfig.MaxUploadSize = config.GetBeegoMaxUploadSizeBytes() // 设置 beego 的最大内存和最大上传大小
 
 	metricCfg := config.Metric()
 	if metricCfg.Enabled {
@@ -178,14 +178,14 @@ func main() {
 	config.InitTraceConfig(ctx)
 	shutdownTracerProvider := tracelib.InitGlobalTracer(ctx)
 	token.InitCreators()
-	database, err := config.Database()
+	database, err := config.Database() // 数据库相关配置
 	if err != nil {
 		log.Fatalf("failed to get database configuration: %v", err)
 	}
-	if err := dao.InitDatabase(database); err != nil {
+	if err := dao.InitDatabase(database); err != nil { // 初始化数据库
 		log.Fatalf("failed to initialize database: %v", err)
 	}
-	if strings.EqualFold(*runMode, "migrate") {
+	if strings.EqualFold(*runMode, "migrate") { // 数据库迁移
 		// Used by Harbor helm preinstall, preupgrade hook container
 		if err = migration.Migrate(database); err != nil {
 			log.Fatalf("failed to migrate the database, error: %v", err)
@@ -241,7 +241,7 @@ func main() {
 	log.Info("initializing notification...")
 	notification.Init()
 
-	server.RegisterRoutes()
+	server.RegisterRoutes() // 注册路由
 
 	if common_http.InternalTLSEnabled() {
 		log.Info("internal TLS enabled, Init TLS ...")
