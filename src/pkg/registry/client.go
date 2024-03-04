@@ -285,7 +285,7 @@ func (c *client) ManifestExist(repository, reference string) (bool, *distributio
 	return true, &distribution.Descriptor{Digest: digest.Digest(dig), MediaType: contentType, Size: int64(lenth)}, nil
 }
 
-func (c *client) PullManifest(repository, reference string, acceptedMediaTypes ...string) (
+func (c *client) PullManifest(repository, reference string, acceptedMediaTypes ...string) ( // 获取 manifest 和 digest
 	distribution.Manifest, string, error) {
 	req, err := http.NewRequest(http.MethodGet, buildManifestURL(c.url, repository, reference), nil)
 	if err != nil {

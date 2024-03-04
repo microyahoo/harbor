@@ -74,7 +74,7 @@ type Controller interface {
 }
 
 // NewController creates a new instance of the replication controller
-func NewController() Controller {
+func NewController() Controller { // replication controller
 	return &controller{
 		repMgr:     replication.Mgr,
 		execMgr:    task.ExecMgr,
@@ -109,7 +109,7 @@ func (c *controller) Start(ctx context.Context, policy *replicationmodel.Policy,
 	if op := operator.FromContext(ctx); op != "" {
 		extra["operator"] = op
 	}
-	id, err := c.execMgr.Create(ctx, job.ReplicationVendorType, policy.ID, trigger, extra)
+	id, err := c.execMgr.Create(ctx, job.ReplicationVendorType, policy.ID, trigger, extra) // 创建数据 execution 记录，返回 execution id
 	if err != nil {
 		return 0, err
 	}
@@ -141,7 +141,7 @@ func (c *controller) Start(ctx context.Context, policy *replicationmodel.Policy,
 			return
 		}
 
-		err := c.flowCtl.Start(ctx, id, policy, resource)
+		err := c.flowCtl.Start(ctx, id, policy, resource) // start replication flow
 		if err == nil {
 			// no err, return directly
 			return

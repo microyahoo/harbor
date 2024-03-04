@@ -91,7 +91,7 @@ func (br *BaseRouter) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 // registerRoutes adds routes to the server mux.
-func (br *BaseRouter) registerRoutes() {
+func (br *BaseRouter) registerRoutes() { // 注册路由
 	subRouter := br.router.PathPrefix(fmt.Sprintf("%s/%s", baseRoute, apiVersion)).Subrouter()
 
 	subRouter.HandleFunc("/jobs", br.handler.HandleLaunchJobReq).Methods(http.MethodPost)

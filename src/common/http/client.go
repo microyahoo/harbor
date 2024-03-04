@@ -220,7 +220,7 @@ func (c *Client) GetAndIteratePagination(endpoint string, v interface{}) error {
 		resources = reflect.AppendSlice(resources, reflect.Indirect(res))
 
 		endpoint = ""
-		links := lib.ParseLinks(resp.Header.Get("Link"))
+		links := lib.ParseLinks(resp.Header.Get("Link")) // 从响应头中获取 Link 信息，用于下一次分页查询 `Link: </api/v2.0/projects/deeproute-simulation/repositories?page=2&page_size=10>; rel="next"`
 		for _, link := range links {
 			if link.Rel == "next" {
 				endpoint = url.Scheme + "://" + url.Host + link.URL

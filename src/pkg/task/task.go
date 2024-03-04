@@ -99,7 +99,7 @@ func (m *manager) Count(ctx context.Context, query *q.Query) (int64, error) {
 
 func (m *manager) Create(ctx context.Context, executionID int64, jb *Job, extraAttrs ...map[string]interface{}) (int64, error) {
 	// create task record in database
-	id, err := m.createTaskRecord(ctx, executionID, extraAttrs...)
+	id, err := m.createTaskRecord(ctx, executionID, extraAttrs...) // 创建对应 execution 的 replication task
 	if err != nil {
 		return 0, err
 	}
@@ -110,7 +110,7 @@ func (m *manager) Create(ctx context.Context, executionID int64, jb *Job, extraA
 	// when the job is submitted to the jobservice and running, the task record may not
 	// insert yet, this will cause the status hook handler returning 404, and the jobservice
 	// will re-send the status hook again
-	jobID, err := m.submitJob(ctx, id, jb)
+	jobID, err := m.submitJob(ctx, id, jb) // 提交 job 到 jobservice, 并返回 job uuid
 	if err != nil {
 		// failed to submit job to jobservice, delete the task record
 		log.Errorf("delete task %d from db due to failed to submit job %v, error: %v", id, jb.Name, err)
@@ -125,7 +125,7 @@ func (m *manager) Create(ctx context.Context, executionID int64, jb *Job, extraA
 	// populate the job ID for the task
 	if err = m.dao.Update(ctx, &dao.Task{
 		ID:    id,
-		JobID: jobID,
+		JobID: jobID, // 更新 task 的 job id
 	}, "JobID"); err != nil {
 		log.Errorf("failed to populate the job ID for the task %d: %v", id, err)
 	}
@@ -162,7 +162,7 @@ func (m *manager) createTaskRecord(ctx context.Context, executionID int64, extra
 func (m *manager) submitJob(_ context.Context, id int64, jb *Job) (string, error) {
 	jobData := &models.JobData{
 		Name:       jb.Name,
-		StatusHook: fmt.Sprintf("%s/service/notifications/tasks/%d", m.coreURL, id),
+		StatusHook: fmt.Sprintf("%s/service/notifications/tasks/%d", m.coreURL, id), // 状态 hook
 	}
 	if jb.Parameters != nil {
 		jobData.Parameters = models.Parameters(jb.Parameters)
@@ -194,7 +194,7 @@ func (m *manager) Stop(ctx context.Context, id int64) error {
 			now := time.Now()
 			err = m.dao.Update(ctx, &dao.Task{
 				ID:         task.ID,
-				Status:     job.StoppedStatus.String(),
+				Status:     job.StoppedStatus.String(), // 将 task 标记为 Stopped
 				StatusCode: job.StoppedStatus.Code(),
 				UpdateTime: now,
 				EndTime:    now,

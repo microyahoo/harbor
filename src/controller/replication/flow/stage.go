@@ -61,7 +61,7 @@ func fetchResources(adapter adp.Adapter, policy *repctlmodel.Policy) ([]*model.R
 	if !ok {
 		return nil, fmt.Errorf("the adapter doesn't implement the ArtifactRegistry interface")
 	}
-	res, err := reg.FetchArtifacts(policy.Filters)
+	res, err := reg.FetchArtifacts(policy.Filters) // 根据 policy 过滤策略获取所有的 artifacts
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch artifacts: %v", err)
 	}
@@ -75,7 +75,7 @@ func fetchResources(adapter adp.Adapter, policy *repctlmodel.Policy) ([]*model.R
 func assembleSourceResources(resources []*model.Resource,
 	policy *repctlmodel.Policy) []*model.Resource {
 	for _, resource := range resources {
-		resource.Registry = policy.SrcRegistry
+		resource.Registry = policy.SrcRegistry // 设置 resource registry 信息
 	}
 	log.Debug("assemble the source resources completed")
 	return resources
@@ -96,7 +96,7 @@ func assembleDestinationResources(resources []*model.Resource,
 			ExtendedInfo: resource.ExtendedInfo,
 			Deleted:      resource.Deleted,
 			IsDeleteTag:  resource.IsDeleteTag,
-			Override:     policy.Override,
+			Override:     policy.Override, // 是否 override
 			Skip:         resource.Skip,
 		}
 		res.Metadata = &model.ResourceMetadata{
@@ -189,7 +189,7 @@ func getResourceReferences(res *model.Resource) string {
 // repository:a/b/c/image namespace:n replaceCount: 2 -> n/c/image
 // repository:a/b/c/image namespace:n replaceCount: 3 -> n/image
 // repository:a/b/c/image namespace:n replaceCount: 4 -> error
-func replaceNamespace(repository string, namespace string, replaceCount int8, dstRepoComponentPathType string) (string, error) {
+func replaceNamespace(repository string, namespace string, replaceCount int8, dstRepoComponentPathType string) (string, error) { // ？还没看懂
 	if len(namespace) == 0 {
 		return repository, nil
 	}

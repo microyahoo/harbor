@@ -48,5 +48,5 @@ func (c *controller) Start(ctx context.Context, executionID int64, policy *repct
 	if resource != nil {
 		resources = append(resources, resource)
 	}
-	return NewCopyFlow(executionID, policy, resources...).Run(ctx)
+	return NewCopyFlow(executionID, policy, resources...).Run(ctx) // copy flow
 }

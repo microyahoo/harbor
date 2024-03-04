@@ -115,7 +115,7 @@ func NewReplicationClient(endpoint, secret string) *DefaultClient {
 }
 
 // SubmitJob call jobservice API to submit a job and returns the job's UUID.
-func (d *DefaultClient) SubmitJob(jd *models.JobData) (string, error) {
+func (d *DefaultClient) SubmitJob(jd *models.JobData) (string, error) { // 提交 job 到 jobservice, 返回 job 的 uuid
 	url := d.endpoint + "/api/v1/jobs"
 	jq := models.JobRequest{
 		Job: jd,
@@ -208,7 +208,7 @@ func (d *DefaultClient) GetExecutions(periodicJobID string) ([]job.Stats, error)
 
 // PostAction call jobservice's API to operate action for job specified by uuid
 func (d *DefaultClient) PostAction(uuid, action string) error {
-	url := d.endpoint + "/api/v1/jobs/" + uuid
+	url := d.endpoint + "/api/v1/jobs/" + uuid // 调用 job service api，例如 stop execution tasks，其中 uuid 为 task id， action 为 stop
 	req := struct {
 		Action string `json:"action"`
 	}{

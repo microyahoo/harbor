@@ -258,7 +258,7 @@ func (bt *basicTracker) Run() error {
 // Stop is final status, if failed to do, retry should be enforced.
 // Either one is failed, the final return will be marked as failed.
 func (bt *basicTracker) Stop() error {
-	if err := bt.setStatus(StoppedStatus); err != nil {
+	if err := bt.setStatus(StoppedStatus); err != nil { // 将 redis 中的状态更新为  stopped
 		return errors.Wrap(err, "stop")
 	}
 

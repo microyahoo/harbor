@@ -34,7 +34,7 @@ func init() {
 type factory struct {
 }
 
-func (f *factory) Create(r *model.Registry) (adp.Adapter, error) {
+func (f *factory) Create(r *model.Registry) (adp.Adapter, error) { // harbor registry adapter 工厂函数
 	base, err := base.New(r)
 	if err != nil {
 		return nil, err

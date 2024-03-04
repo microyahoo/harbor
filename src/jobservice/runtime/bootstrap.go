@@ -119,7 +119,7 @@ func (bs *Bootstrap) LoadAndRun(ctx context.Context, cancel context.CancelFunc) 
 		manager       mgt.Manager
 		syncWorker    *sync2.Worker
 	)
-	if cfg.PoolConfig.Backend == config.JobServicePoolBackendRedis {
+	if cfg.PoolConfig.Backend == config.JobServicePoolBackendRedis { // job service pool 以 redis 作为 backend
 		// Number of workers
 		workerNum := cfg.PoolConfig.WorkerCount
 		// Add {} to namespace to void slot issue
@@ -223,7 +223,7 @@ func (bs *Bootstrap) LoadAndRun(ctx context.Context, cancel context.CancelFunc) 
 	// Initialize controller
 	ctl := core.NewController(backendWorker, manager)
 	// Initialize Prometheus backend
-	go bs.createMetricServer(cfg)
+	go bs.createMetricServer(cfg) // 创建 jobservice metrics server
 	// Start the API server
 	apiServer := bs.createAPIServer(ctx, cfg, ctl)
 
@@ -285,7 +285,7 @@ func (bs *Bootstrap) createAPIServer(ctx context.Context, cfg *config.Configurat
 	// Initialized API server
 	authProvider := &api.SecretAuthenticator{}
 	handler := api.NewDefaultHandler(ctl)
-	router := api.NewBaseRouter(handler, authProvider)
+	router := api.NewBaseRouter(handler, authProvider) // 会注册路由信息
 	serverConfig := api.ServerConfig{
 		Protocol: cfg.Protocol,
 		Port:     cfg.Port,
@@ -319,7 +319,7 @@ func (bs *Bootstrap) loadAndRunRedisWorkerPool(
 			job.ImageScanJobVendorType:      (*scan.Job)(nil),
 			job.PurgeAuditVendorType:        (*purge.Job)(nil),
 			job.GarbageCollectionVendorType: (*gc.GarbageCollector)(nil),
-			job.ReplicationVendorType:       (*replication.Replication)(nil),
+			job.ReplicationVendorType:       (*replication.Replication)(nil), // 注册 replication job
 			job.RetentionVendorType:         (*retention.Job)(nil),
 			scheduler.JobNameScheduler:      (*scheduler.PeriodicJob)(nil),
 			job.WebhookJobVendorType:        (*notification.WebhookJob)(nil),

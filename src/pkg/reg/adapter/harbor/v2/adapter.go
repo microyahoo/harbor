@@ -51,14 +51,14 @@ func (a *adapter) Info() (*model.RegistryInfo, error) {
 }
 
 func (a *adapter) FetchArtifacts(filters []*model.Filter) ([]*model.Resource, error) {
-	projects, err := a.ListProjects(filters)
+	projects, err := a.ListProjects(filters) // 分页读取所有的 projects
 	if err != nil {
 		return nil, err
 	}
 
 	var resources []*model.Resource
 	for _, project := range projects {
-		repositories, err := a.listRepositories(project, filters)
+		repositories, err := a.listRepositories(project, filters) // 分页读取指定 project 对应的 repositories
 		if err != nil {
 			return nil, err
 		}
@@ -73,7 +73,7 @@ func (a *adapter) FetchArtifacts(filters []*model.Filter) ([]*model.Resource, er
 			index := i
 			repo := r
 			runner.AddTask(func() error {
-				artifacts, err := a.listArtifacts(repo.Name, filters)
+				artifacts, err := a.listArtifacts(repo.Name, filters) // 读取指定 repository 的 artifacts
 				if err != nil {
 					return fmt.Errorf("failed to list artifacts of repository '%s': %v", repo.Name, err)
 				}
@@ -82,7 +82,7 @@ func (a *adapter) FetchArtifacts(filters []*model.Filter) ([]*model.Resource, er
 					return nil
 				}
 
-				rawResources[index] = &model.Resource{
+				rawResources[index] = &model.Resource{ // 将指定 repository 下的 artifacts 封装为 resource
 					Type:     model.ResourceTypeArtifact,
 					Registry: a.Registry,
 					Metadata: &model.ResourceMetadata{

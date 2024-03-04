@@ -86,7 +86,7 @@ type transfer struct {
 	dst       adapter.ArtifactRegistry
 }
 
-func (t *transfer) Transfer(src *model.Resource, dst *model.Resource, opts *trans.Options) error {
+func (t *transfer) Transfer(src *model.Resource, dst *model.Resource, opts *trans.Options) error { // 镜像传输
 	// initialize
 	if err := t.initialize(src, dst); err != nil {
 		return err
@@ -103,7 +103,7 @@ func (t *transfer) Transfer(src *model.Resource, dst *model.Resource, opts *tran
 	}
 
 	// copy the repository from source registry to the destination
-	return t.copy(t.convert(src), t.convert(dst), dst.Override, opts)
+	return t.copy(t.convert(src), t.convert(dst), dst.Override, opts) // 传入参数是否可以 override
 }
 
 func (t *transfer) convert(resource *model.Resource) *repository {
@@ -210,7 +210,7 @@ func (t *transfer) copyArtifact(srcRepo, srcRef, dstRepo, dstRef string, overrid
 	t.logger.Infof("copying %s:%s(source registry) to %s:%s(destination registry)...",
 		srcRepo, srcRef, dstRepo, dstRef)
 	// pull the manifest from the source registry
-	manifest, digest, err := t.pullManifest(srcRepo, srcRef)
+	manifest, digest, err := t.pullManifest(srcRepo, srcRef) // 从源 registry 中拉取 manifest
 	if err != nil {
 		return err
 	}
@@ -222,13 +222,13 @@ func (t *transfer) copyArtifact(srcRepo, srcRef, dstRepo, dstRef string, overrid
 	}
 	if exist {
 		// the same artifact already exists
-		if digest == digest2 {
+		if digest == digest2 { // digest 相等则直接返回
 			t.logger.Infof("the artifact %s:%s already exists on the destination registry, skip",
 				dstRepo, dstRef)
 			return nil
 		}
 		// the same name artifact exists, but not allowed to override
-		if !override {
+		if !override { // 如果 digest 不相等，同时也设置了 override
 			t.logger.Warningf("the same name artifact %s:%s exists on the destination registry, but the \"override\" is set to false, skip",
 				dstRepo, dstRef)
 			return nil
@@ -246,7 +246,7 @@ func (t *transfer) copyArtifact(srcRepo, srcRef, dstRepo, dstRef string, overrid
 	}
 
 	// push the manifest to the destination registry
-	if err := t.pushManifest(manifest, dstRepo, dstRef); err != nil {
+	if err := t.pushManifest(manifest, dstRepo, dstRef); err != nil { // push manifest 到目标端 registry
 		return err
 	}
 
@@ -256,7 +256,7 @@ func (t *transfer) copyArtifact(srcRepo, srcRef, dstRepo, dstRef string, overrid
 }
 
 // copy the content from source registry to destination according to its media type
-func (t *transfer) copyContent(content distribution.Descriptor, srcRepo, dstRepo string, opts *trans.Options) error {
+func (t *transfer) copyContent(content distribution.Descriptor, srcRepo, dstRepo string, opts *trans.Options) error { // 拷贝 content
 	digest := content.Digest.String()
 	switch content.MediaType {
 	// when the media type of pulled manifest is index,

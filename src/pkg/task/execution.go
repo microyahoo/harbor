@@ -107,7 +107,7 @@ func (e *executionManager) Create(ctx context.Context, vendorType string, vendor
 	}
 
 	now := time.Now()
-	execution := &dao.Execution{
+	execution := &dao.Execution{ // 创建 execution
 		VendorType: vendorType,
 		VendorID:   vendorID,
 		Status:     job.RunningStatus.String(),
@@ -169,7 +169,7 @@ func (e *executionManager) Stop(ctx context.Context, id int64) error {
 
 	// when an execution is in final status, if it contains task that is a periodic or retrying job it will
 	// run again in the near future, so we must operate the stop action no matter the status is final or not
-	tasks, err := e.taskDAO.List(ctx, &q.Query{
+	tasks, err := e.taskDAO.List(ctx, &q.Query{ // 查询 execution 对应的所有 tasks
 		Keywords: map[string]interface{}{
 			"ExecutionID": id,
 		},
@@ -189,7 +189,7 @@ func (e *executionManager) Stop(ctx context.Context, id int64) error {
 		now := time.Now()
 		return e.executionDAO.Update(ctx, &dao.Execution{
 			ID:         id,
-			Status:     job.StoppedStatus.String(),
+			Status:     job.StoppedStatus.String(), // 将 execution 标记为 Stopped
 			Revision:   execution.Revision + 1,
 			UpdateTime: now,
 			EndTime:    now,

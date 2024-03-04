@@ -49,13 +49,13 @@ func NewCopyFlow(executionID int64, policy *repctlmodel.Policy, resources ...*mo
 
 func (c *copyFlow) Run(ctx context.Context) error {
 	logger := log.GetLogger(ctx)
-	srcAdapter, dstAdapter, err := initialize(c.policy)
+	srcAdapter, dstAdapter, err := initialize(c.policy) // 创建源端和目标端客户端 adapter
 	if err != nil {
 		return err
 	}
 	srcResources := c.resources
 	if len(srcResources) == 0 {
-		srcResources, err = fetchResources(srcAdapter, c.policy)
+		srcResources, err = fetchResources(srcAdapter, c.policy) // 如果没有指定源端 resources，则获取所有的源端 resources
 		if err != nil {
 			return err
 		}
@@ -78,7 +78,7 @@ func (c *copyFlow) Run(ctx context.Context) error {
 		return nil
 	}
 
-	srcResources = assembleSourceResources(srcResources, c.policy)
+	srcResources = assembleSourceResources(srcResources, c.policy) // 组装源端和目标端 resources
 	info, err := dstAdapter.Info()
 	if err != nil {
 		return err
@@ -88,7 +88,7 @@ func (c *copyFlow) Run(ctx context.Context) error {
 		return err
 	}
 
-	if err = prepareForPush(dstAdapter, dstResources); err != nil {
+	if err = prepareForPush(dstAdapter, dstResources); err != nil { // 在目标端创建对应的 projects
 		return err
 	}
 
@@ -131,8 +131,8 @@ func (c *copyFlow) createTasks(ctx context.Context, srcResources, dstResources [
 			return err
 		}
 
-		job := &task.Job{
-			Name: job.ReplicationVendorType,
+		job := &task.Job{ // replication task job
+			Name: job.ReplicationVendorType, // job name
 			Metadata: &job.Metadata{
 				JobKind: job.KindGeneric,
 			},
@@ -144,7 +144,7 @@ func (c *copyFlow) createTasks(ctx context.Context, srcResources, dstResources [
 			},
 		}
 
-		if _, err = c.taskMgr.Create(ctx, c.executionID, job, map[string]interface{}{
+		if _, err = c.taskMgr.Create(ctx, c.executionID, job, map[string]interface{}{ // 创建 replication task
 			"operation":            "copy",
 			"resource_type":        string(srcResource.Type),
 			"source_resource":      getResourceName(srcResource),

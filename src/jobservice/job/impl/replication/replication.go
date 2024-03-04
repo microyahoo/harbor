@@ -109,7 +109,7 @@ func (r *Replication) Run(ctx job.Context, params job.Parameters) error {
 		return err
 	}
 
-	return trans.Transfer(src, dst, opts)
+	return trans.Transfer(src, dst, opts) // transfer
 }
 
 func parseParams(params map[string]interface{}) (*model.Resource, *model.Resource, *transfer.Options, error) {

@@ -35,7 +35,7 @@ type client struct {
 func (c *client) listRepositories(project *base.Project) ([]*model.Repository, error) {
 	repositories := []*repomodel.RepoRecord{}
 	url := fmt.Sprintf("%s/projects/%s/repositories", c.BasePath(), project.Name)
-	if err := c.C.GetAndIteratePagination(url, &repositories); err != nil {
+	if err := c.C.GetAndIteratePagination(url, &repositories); err != nil { // 获取指定 project 的所有 repositories
 		return nil, err
 	}
 	var repos []*model.Repository

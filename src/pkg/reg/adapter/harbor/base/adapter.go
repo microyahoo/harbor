@@ -33,8 +33,8 @@ import (
 )
 
 // New creates an instance of the base adapter
-func New(registry *model.Registry) (*Adapter, error) {
-	if isLocalHarbor(registry.URL) {
+func New(registry *model.Registry) (*Adapter, error) { // 创建 harbor adapter，即 harbor 客户端实例
+	if isLocalHarbor(registry.URL) { // local harbor
 		authorizer := common_http_auth.NewSecretAuthorizer(registry.Credential.AccessSecret)
 		httpClient := common_http.NewClient(&http.Client{
 			// when it's a local Harbor instance, the code runs inside the same process with
@@ -80,7 +80,7 @@ func New(registry *model.Registry) (*Adapter, error) {
 type Adapter struct {
 	*native.Adapter
 	Registry *model.Registry
-	Client   *Client
+	Client   *Client // harbor 客户端
 
 	httpClient *common_http.Client
 }
@@ -250,7 +250,7 @@ func (a *Adapter) ListProjects(filters []*model.Filter) ([]*Project, error) {
 		log.Debugf("parsed the projects %v from pattern %s", names, pattern)
 		return projects, nil
 	}
-	return a.Client.ListProjects("")
+	return a.Client.ListProjects("") // 分页读取所有的 projects
 }
 
 func abstractPublicMetadata(metadata map[string]interface{}) map[string]interface{} {

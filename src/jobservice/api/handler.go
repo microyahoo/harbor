@@ -164,7 +164,7 @@ func (dh *DefaultHandler) HandleJobActionReq(w http.ResponseWriter, req *http.Re
 	}
 
 	// Stop job
-	if err := dh.controller.StopJob(jobID); err != nil {
+	if err := dh.controller.StopJob(jobID); err != nil { // stop job
 		code := http.StatusInternalServerError
 		if errs.IsObjectNotFoundError(err) {
 			code = http.StatusNotFound

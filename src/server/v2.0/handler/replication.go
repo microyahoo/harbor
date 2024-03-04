@@ -37,7 +37,7 @@ import (
 
 func newReplicationAPI() *replicationAPI {
 	return &replicationAPI{
-		ctl: replication.Ctl,
+		ctl: replication.Ctl, // replication api controller
 	}
 }
 
@@ -255,7 +255,7 @@ func (r *replicationAPI) StartReplication(ctx context.Context, params operation.
 		trigger = task.ExecutionTriggerSchedule
 	}
 
-	executionID, err := r.ctl.Start(ctx, policy, nil, trigger)
+	executionID, err := r.ctl.Start(ctx, policy, nil, trigger) // start replication
 	if err != nil {
 		return r.SendError(ctx, err)
 	}
@@ -267,7 +267,7 @@ func (r *replicationAPI) StopReplication(ctx context.Context, params operation.S
 	if err := r.RequireSystemAccess(ctx, rbac.ActionCreate, rbac.ResourceReplication); err != nil {
 		return r.SendError(ctx, err)
 	}
-	if err := r.ctl.Stop(ctx, params.ID); err != nil {
+	if err := r.ctl.Stop(ctx, params.ID); err != nil { // stop replication
 		return r.SendError(ctx, err)
 	}
 	return nil

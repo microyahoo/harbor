@@ -36,7 +36,7 @@ type Resource struct {
 	// indicate the resource is a tag deletion
 	IsDeleteTag bool `json:"is_delete_tag"`
 	// indicate whether the resource can be overridden
-	Override bool `json:"override"`
+	Override bool `json:"override"` // 是否可以 override
 	// Skip is a flag for resource which satisfies replication rules but should
 	// be skipped because of other limits like when dest project's type is proxy cache.
 	Skip bool `json:"-"`
