@@ -145,7 +145,7 @@ const (
 	RobotScannerNamePrefix = "robot_scanner_name_prefix"
 	// Use this prefix to index user who tries to login with web hook token.
 	AuthProxyUserNamePrefix = "tokenreview$"
-	CoreConfigPath          = "/api/v2.0/internalconfig"
+	CoreConfigPath          = "/api/v2.0/internalconfig" // internal config
 	RobotTokenDuration      = "robot_token_duration"
 
 	OIDCCallbackPath = "/c/oidc/callback"

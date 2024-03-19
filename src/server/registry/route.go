@@ -115,9 +115,9 @@ func RegisterRoutes() {
 	root.NewRoute().
 		Method(http.MethodPut).
 		Path("/*/blobs/uploads/:session_id").
-		Middleware(metric.InjectOpIDMiddleware(metric.BlobsUploadOperationID)).
-		Middleware(quota.PutBlobUploadMiddleware()).
-		Middleware(blob.PutBlobUploadMiddleware()).
+		Middleware(metric.InjectOpIDMiddleware(metric.BlobsUploadOperationID)). // put v2_blob_upload
+		Middleware(quota.PutBlobUploadMiddleware()).                            // quota PutBlobUploadMiddleware
+		Middleware(blob.PutBlobUploadMiddleware()).                             // blob PutBlobUploadMiddleware
 		Handler(proxy)
 	root.NewRoute().
 		Method(http.MethodGet).

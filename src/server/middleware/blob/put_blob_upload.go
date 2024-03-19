@@ -63,13 +63,13 @@ func PutBlobUploadMiddleware() func(http.Handler) http.Handler {
 			}
 
 			digest := w.Header().Get("Docker-Content-Digest")
-			blobID, err := blobController.Ensure(ctx, digest, "application/octet-stream", size)
+			blobID, err := blobController.Ensure(ctx, digest, "application/octet-stream", size) // 数据库中查询指定 digest 对应的 blob，如果没有则创建
 			if err != nil {
 				logger.Errorf("ensure blob %s failed, error: %v", digest, err)
 				return err
 			}
 
-			if err := blobController.AssociateWithProjectByID(ctx, blobID, p.ProjectID); err != nil {
+			if err := blobController.AssociateWithProjectByID(ctx, blobID, p.ProjectID); err != nil { // 创建 project_blob 记录
 				logger.Errorf("associate blob %s with project %s failed, error: %v", digest, p.Name, err)
 				return err
 			}
