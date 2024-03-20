@@ -17,6 +17,7 @@ package quota
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/goharbor/harbor/src/controller/blob"
 	"github.com/goharbor/harbor/src/lib/errors"
@@ -38,6 +39,10 @@ func PutManifestMiddleware() func(http.Handler) http.Handler {
 func putManifestResources(r *http.Request, _, referenceID string) (types.ResourceList, error) {
 	logger := log.G(r.Context()).WithFields(log.Fields{"middleware": "quota", "action": "request", "url": r.URL.Path})
 
+	now := time.Now()
+	defer func() {
+		logger.Infof("**put manifest resources middleware with method %s take: %s", r.Method, time.Since(now))
+	}()
 	projectID, _ := strconv.ParseInt(referenceID, 10, 64)
 
 	manifest, descriptor, err := unmarshalManifest(r)

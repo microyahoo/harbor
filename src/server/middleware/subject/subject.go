@@ -19,6 +19,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/docker/distribution/manifest/schema2"
 	"github.com/opencontainers/go-digest"
@@ -91,9 +92,14 @@ func Middleware() func(http.Handler) http.Handler {
 		if statusCode != http.StatusCreated {
 			return nil
 		}
+		now := time.Now()
+		logger := log.G(r.Context()).WithFields(log.Fields{"middleware": "subject", "action": "put_manifest", "url": r.URL.Path})
+		defer func() {
+			logger.Infof("**put manifest subject middleware with method after response %s take: %s", r.Method, time.Since(now))
+		}()
 
 		ctx := r.Context()
-		logger := log.G(ctx).WithFields(log.Fields{"middleware": "subject"})
+		// logger := log.G(ctx).WithFields(log.Fields{"middleware": "subject"})
 
 		none := lib.ArtifactInfo{}
 		info := lib.GetArtifactInfo(ctx)

@@ -19,7 +19,9 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
+	"github.com/goharbor/harbor/src/lib/log"
 	"github.com/goharbor/harbor/src/pkg/distribution"
 	"github.com/goharbor/harbor/src/server/middleware"
 )
@@ -27,6 +29,11 @@ import (
 // PatchBlobUploadMiddleware middleware to record the accepted blob size for stream blob upload
 func PatchBlobUploadMiddleware() func(http.Handler) http.Handler {
 	return middleware.AfterResponse(func(w http.ResponseWriter, r *http.Request, statusCode int) error {
+		logger := log.G(r.Context()).WithFields(log.Fields{"middleware": "blob", "action": "patch_blob_upload", "url": r.URL.Path})
+		now := time.Now()
+		defer func() {
+			logger.Infof("**patch blob upload middleware with method %s take: %s", r.Method, time.Since(now))
+		}()
 		// Only record when patch blob upload success
 		if statusCode != http.StatusAccepted {
 			return nil

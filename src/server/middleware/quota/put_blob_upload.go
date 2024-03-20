@@ -17,6 +17,7 @@ package quota
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/goharbor/harbor/src/controller/blob"
 	"github.com/goharbor/harbor/src/lib/log"
@@ -35,7 +36,11 @@ func PutBlobUploadMiddleware() func(http.Handler) http.Handler {
 }
 
 func putBlobUploadResources(r *http.Request, _, referenceID string) (types.ResourceList, error) {
-	logger := log.G(r.Context()).WithFields(log.Fields{"middleware": "quota", "action": "request", "url": r.URL.Path})
+	logger := log.G(r.Context()).WithFields(log.Fields{"middleware": "quota", "action": "putBlobUploadResources", "url": r.URL.Path})
+	now := time.Now()
+	defer func() {
+		logger.Infof("**put blob upload resources middleware with method %s take: %s", r.Method, time.Since(now))
+	}()
 
 	size, err := strconv.ParseInt(r.Header.Get("Content-Length"), 10, 64)
 	if err != nil || size == 0 {

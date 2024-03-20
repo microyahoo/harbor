@@ -17,6 +17,7 @@ package blob
 import (
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/goharbor/harbor/src/lib"
 	"github.com/goharbor/harbor/src/lib/errors"
@@ -30,8 +31,13 @@ import (
 // create Blob for the manifest, associate all Blobs with the manifest after PUT /v2/<name>/manifests/<reference> success.
 func PutManifestMiddleware() func(http.Handler) http.Handler {
 	before := middleware.BeforeRequest(func(r *http.Request) error {
-		ctx := r.Context()
-		logger := log.G(ctx)
+		now := time.Now()
+		logger := log.G(r.Context()).WithFields(log.Fields{"middleware": "manifest", "action": "put_manifest", "url": r.URL.Path})
+		defer func() {
+			logger.Infof("**put manifest middleware with method %s before request take: %s", r.Method, time.Since(now))
+		}()
+		// ctx := r.Context()
+		// logger := log.G(ctx)
 
 		lib.NopCloseRequest(r) // make the r.Body re-readable
 		body, err := io.ReadAll(r.Body)
@@ -53,10 +59,15 @@ func PutManifestMiddleware() func(http.Handler) http.Handler {
 		if statusCode != http.StatusCreated {
 			return nil
 		}
+		now := time.Now()
+		logger := log.G(r.Context()).WithFields(log.Fields{"middleware": "blob", "action": "put_manifest", "url": r.URL.Path})
+		defer func() {
+			logger.Infof("**put manifest middleware with method %s after response take: %s", r.Method, time.Since(now))
+		}()
 
 		ctx := r.Context()
 
-		logger := log.G(ctx).WithFields(log.Fields{"middleware": "blob"})
+		// logger := log.G(ctx).WithFields(log.Fields{"middleware": "blob"})
 
 		p, err := projectController.GetByName(ctx, distribution.ParseProjectName(r.URL.Path))
 		if err != nil {

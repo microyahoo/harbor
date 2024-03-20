@@ -17,6 +17,7 @@ package immutable
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	common_util "github.com/goharbor/harbor/src/common/utils"
 	"github.com/goharbor/harbor/src/controller/artifact"
@@ -51,6 +52,11 @@ func Middleware() func(http.Handler) http.Handler {
 // If the pushing image matched by any of immutable rule, will have to whether it is the first time to push it,
 // as the immutable rule only impacts the existing tag.
 func handlePush(req *http.Request) error {
+	now := time.Now()
+	logger := log.G(req.Context()).WithFields(log.Fields{"middleware": "manifest", "action": "handle_push", "url": req.URL.Path})
+	defer func() {
+		logger.Infof("**handle push manifest middleware with method %s take: %s", req.Method, time.Since(now))
+	}()
 	none := lib.ArtifactInfo{}
 	art := lib.GetArtifactInfo(req.Context())
 	if art == none {

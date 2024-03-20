@@ -18,6 +18,7 @@ import (
 	"context"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/goharbor/harbor/src/lib/log"
 	"github.com/goharbor/harbor/src/lib/orm"
@@ -32,6 +33,11 @@ import (
 // 2, It has to deal with the concurrence blob push.
 func PutBlobUploadMiddleware() func(http.Handler) http.Handler {
 	before := middleware.BeforeRequest(func(r *http.Request) error {
+		logger := log.G(r.Context()).WithFields(log.Fields{"middleware": "blob", "action": "put_blob_upload", "url": r.URL.Path})
+		now := time.Now()
+		defer func() {
+			logger.Infof("**put blob upload middleware with method %s before request take: %s", r.Method, time.Since(now))
+		}()
 		v := r.URL.Query()
 		digest := v.Get("digest")
 		return probeBlob(r, digest)
@@ -45,7 +51,11 @@ func PutBlobUploadMiddleware() func(http.Handler) http.Handler {
 		ctx := r.Context()
 
 		h := func(ctx context.Context) error {
-			logger := log.G(ctx).WithFields(log.Fields{"middleware": "blob"})
+			logger := log.G(r.Context()).WithFields(log.Fields{"middleware": "blob", "action": "put_blob_upload", "url": r.URL.Path})
+			now := time.Now()
+			defer func() {
+				logger.Infof("**put blob upload middleware with method %s after response take: %s", r.Method, time.Since(now))
+			}()
 
 			size, err := strconv.ParseInt(r.Header.Get("Content-Length"), 10, 64)
 			if err != nil || size == 0 {

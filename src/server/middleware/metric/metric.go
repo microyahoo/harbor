@@ -22,6 +22,7 @@ import (
 
 	"github.com/goharbor/harbor/src/lib"
 	"github.com/goharbor/harbor/src/lib/config"
+	"github.com/goharbor/harbor/src/lib/log"
 	"github.com/goharbor/harbor/src/lib/metric"
 )
 
@@ -58,6 +59,10 @@ func instrumentHandler(next http.Handler) http.Handler {
 		metric.TotalInFlightGauge.Inc()
 		defer metric.TotalInFlightGauge.Dec()
 		now, rc, op := time.Now(), lib.NewResponseRecorder(w), ""
+		logger := log.G(r.Context()).WithFields(log.Fields{"middleware": "metric", "action": "instrument_handler", "url": r.URL.Path})
+		defer func() {
+			logger.Infof("**instrument handler with method %s op %s take: %s", r.Method, op, time.Since(now))
+		}()
 		ctx := context.WithValue(r.Context(), contextOpIDKey{}, &op)
 		next.ServeHTTP(rc, r.WithContext(ctx))
 		if len(op) == 0 {

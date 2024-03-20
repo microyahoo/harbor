@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/opencontainers/go-digest"
 
@@ -171,6 +172,11 @@ func deleteManifest(w http.ResponseWriter, req *http.Request) {
 }
 
 func putManifest(w http.ResponseWriter, req *http.Request) {
+	now := time.Now()
+	logger := log.G(req.Context()).WithFields(log.Fields{"action": "put_manifest", "url": req.URL.Path})
+	defer func() {
+		logger.Infof("**put manifest with method %s take: %s", req.Method, time.Since(now))
+	}()
 	repo := router.Param(req.Context(), ":splat")
 	reference := router.Param(req.Context(), ":reference")
 

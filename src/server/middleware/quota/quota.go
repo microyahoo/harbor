@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"time"
 
 	cq "github.com/goharbor/harbor/src/controller/quota"
 	"github.com/goharbor/harbor/src/lib"
@@ -62,6 +63,10 @@ func RequestMiddleware(config RequestConfig, skippers ...middleware.Skipper) fun
 
 	return middleware.New(func(w http.ResponseWriter, r *http.Request, next http.Handler) {
 		logger := log.G(r.Context()).WithFields(log.Fields{"middleware": "quota", "action": "request", "url": r.URL.Path})
+		now := time.Now()
+		defer func() {
+			logger.Infof("**update resource quota middleware with method %s take: %s", r.Method, time.Since(now))
+		}()
 
 		if config.ReferenceObject == nil || config.Resources == nil {
 			lib_http.SendError(w, fmt.Errorf("invald config the for middleware"))

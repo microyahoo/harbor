@@ -233,7 +233,9 @@ define _build_base
 	fi
 endef
 
-build: _build_prepare _build_db _build_portal _build_core _build_jobservice _build_log _build_nginx _build_registry _build_registryctl _build_trivy_adapter _build_redis _compile_and_build_exporter
+# build: _build_registry _build_registryctl
+build: _build_prepare _build_core _build_registry _build_registryctl
+# build: _build_prepare _build_db _build_portal _build_core _build_jobservice _build_log _build_nginx _build_registry _build_registryctl _build_trivy_adapter _build_redis _compile_and_build_exporter
 	@if [ -n "$(REGISTRYUSER)"  ] && [ -n "$(REGISTRYPASSWORD)" ] ; then \
 		docker logout ; \
 	fi

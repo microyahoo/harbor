@@ -274,6 +274,8 @@ func isProxySession(ctx context.Context) bool {
 // DisableBlobAndManifestUploadMiddleware disable push artifact to a proxy project with a non-proxy session
 func DisableBlobAndManifestUploadMiddleware() func(http.Handler) http.Handler {
 	return middleware.New(func(w http.ResponseWriter, r *http.Request, next http.Handler) {
+		now := time.Now()
+		logger := log.G(r.Context()).WithFields(log.Fields{"middleware": "repoproxy", "action": "DisableBlobAndManifestUploadMiddleware", "url": r.URL.Path})
 		ctx := r.Context()
 		art := lib.GetArtifactInfo(ctx)
 		p, err := project.Ctl.GetByName(ctx, art.ProjectName)
@@ -287,6 +289,7 @@ func DisableBlobAndManifestUploadMiddleware() func(http.Handler) http.Handler {
 					errors.Errorf("can not push artifact to a proxy project: %v", p.Name)))
 			return
 		}
+		logger.Infof("**disable blob and manifest upload middleware with method %s take: %s", r.Method, time.Since(now))
 		next.ServeHTTP(w, r)
 	})
 }

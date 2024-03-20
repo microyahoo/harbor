@@ -20,6 +20,7 @@ import (
 	"io"
 	"net/http"
 	"regexp"
+	"time"
 
 	"github.com/docker/distribution/reference"
 	digest "github.com/opencontainers/go-digest"
@@ -103,9 +104,14 @@ func SignatureMiddleware() func(http.Handler) http.Handler {
 		if statusCode != http.StatusCreated {
 			return nil
 		}
+		now := time.Now()
+		logger := log.G(r.Context()).WithFields(log.Fields{"middleware": "cosign", "action": "put_manifest", "url": r.URL.Path})
+		defer func() {
+			logger.Infof("**put manifest cosign middleware with method after response %s take: %s", r.Method, time.Since(now))
+		}()
 
 		ctx := r.Context()
-		logger := log.G(ctx).WithFields(log.Fields{"middleware": "cosign"})
+		// logger := log.G(ctx).WithFields(log.Fields{"middleware": "cosign"})
 
 		none := lib.ArtifactInfo{}
 		info := lib.GetArtifactInfo(ctx)

@@ -80,7 +80,7 @@ func (r *Route) Handler(handler http.Handler) {
 
 	var middlewares []middleware.Middleware
 	if r.parent != nil {
-		middlewares = r.parent.middlewares
+		middlewares = r.parent.middlewares // 会把 parent 的 middleware 也加上，例如 auth
 	}
 
 	middlewares = append(middlewares, r.middlewares...)

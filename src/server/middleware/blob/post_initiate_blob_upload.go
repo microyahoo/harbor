@@ -16,6 +16,7 @@ package blob
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/goharbor/harbor/src/lib/log"
 	"github.com/goharbor/harbor/src/pkg/distribution"
@@ -28,6 +29,12 @@ func PostInitiateBlobUploadMiddleware() func(http.Handler) http.Handler {
 		if statusCode != http.StatusCreated {
 			return nil
 		}
+		now := time.Now()
+		ctx := r.Context()
+		logger := log.G(ctx).WithFields(log.Fields{"middleware": "blob", "action": "post initiate blob_upload", "url": r.URL.Path})
+		defer func() {
+			logger.Infof("**post initiate blob upload with method %s take: %s", r.Method, time.Since(now))
+		}()
 
 		query := r.URL.Query()
 
@@ -35,10 +42,6 @@ func PostInitiateBlobUploadMiddleware() func(http.Handler) http.Handler {
 		if mount == "" {
 			return nil
 		}
-
-		ctx := r.Context()
-
-		logger := log.G(ctx).WithFields(log.Fields{"middleware": "blob"})
 
 		project, err := projectController.GetByName(ctx, distribution.ParseProjectName(r.URL.Path))
 		if err != nil {

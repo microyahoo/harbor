@@ -17,6 +17,7 @@ package quota
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/goharbor/harbor/src/controller/blob"
 	"github.com/goharbor/harbor/src/lib/errors"
@@ -44,7 +45,11 @@ func postInitiateBlobUploadResources(r *http.Request, _, referenceID string) (ty
 
 	ctx := r.Context()
 
-	logger := log.G(ctx).WithFields(log.Fields{"middleware": "quota", "action": "request", "url": r.URL.Path})
+	now := time.Now()
+	logger := log.G(ctx).WithFields(log.Fields{"middleware": "quota", "action": "post initiate blob_upload", "url": r.URL.Path})
+	defer func() {
+		logger.Infof("**post initiate blob upload resources with method %s take: %s", r.Method, time.Since(now))
+	}()
 
 	blb, err := blobController.Get(ctx, mount)
 	if errors.IsNotFoundErr(err) {

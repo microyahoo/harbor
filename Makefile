@@ -79,7 +79,7 @@ REGISTRYPROJECTNAME=goharbor
 DEVFLAG=true
 TRIVYFLAG=false
 HTTPPROXY=
-BUILDBIN=true
+BUILDBIN=false
 NPM_REGISTRY=https://registry.npmjs.org
 BUILDTARGET=build
 GEN_TLS=
@@ -111,7 +111,8 @@ TRIVYADAPTERVERSION=v0.30.22
 REGISTRY_SRC_TAG=v2.8.3
 
 # dependency binaries
-REGISTRYURL=https://storage.googleapis.com/harbor-builds/bin/registry/release-${REGISTRYVERSION}/registry
+# REGISTRYURL=https://storage.googleapis.com/harbor-builds/bin/registry/release-${REGISTRYVERSION}/registry
+REGISTRYURL=http://10.3.9.141/test/registry
 TRIVY_DOWNLOAD_URL=https://github.com/aquasecurity/trivy/releases/download/$(TRIVYVERSION)/trivy_$(TRIVYVERSION:v%=%)_Linux-64bit.tar.gz
 TRIVY_ADAPTER_DOWNLOAD_URL=https://github.com/aquasecurity/harbor-scanner-trivy/releases/download/$(TRIVYADAPTERVERSION)/harbor-scanner-trivy_$(TRIVYADAPTERVERSION:v%=%)_Linux_x86_64.tar.gz
 
