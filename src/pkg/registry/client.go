@@ -344,7 +344,7 @@ func (c *client) DeleteManifest(repository, reference string) error {
 		}
 		reference = string(desc.Digest)
 	}
-	req, err := http.NewRequest(http.MethodDelete, buildManifestURL(c.url, repository, reference), nil)
+	req, err := http.NewRequest(http.MethodDelete, buildManifestURL(c.url, repository, reference), nil) // 调用 registry api 删除 manifest, https://distribution.github.io/distribution/spec/api/
 	if err != nil {
 		return err
 	}

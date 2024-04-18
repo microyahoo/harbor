@@ -342,7 +342,7 @@ func (gc *GarbageCollector) sweep(ctx job.Context) error {
 							uid, index, total, art.RepositoryName, blob.ContentType, blob.Digest)
 						if err := retry.Retry(func() error {
 							return ignoreNotFound(func() error {
-								err := v2DeleteManifest(art.RepositoryName, blob.Digest)
+								err := v2DeleteManifest(art.RepositoryName, blob.Digest) // 从 registry 中删除 manifest
 								// if the system is in read-only mode, return an Abort error to skip retrying
 								if err == readonly.Err {
 									return retry.Abort(err)
@@ -370,7 +370,7 @@ func (gc *GarbageCollector) sweep(ctx job.Context) error {
 						gc.logger.Infof("[%s][%d/%d] delete manifest from storage: %s", uid, index, total, blob.Digest)
 						if err := retry.Retry(func() error {
 							return ignoreNotFound(func() error {
-								err := gc.registryCtlClient.DeleteManifest(art.RepositoryName, blob.Digest)
+								err := gc.registryCtlClient.DeleteManifest(art.RepositoryName, blob.Digest) // 实际上是调用 registry 的 vacuum RemoveManifest, 代码 src/registryctl/api/registry/manifest/manifest.go
 								// if the system is in read-only mode, return an Abort error to skip retrying
 								if err == readonly.Err {
 									return retry.Abort(err)
